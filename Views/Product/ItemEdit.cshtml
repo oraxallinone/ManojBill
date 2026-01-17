@@ -44,10 +44,9 @@
                                                 <label for="exampleInputEmail1">Gst</label>
                                                 @Html.HiddenFor(m => m.Gst)
                                                 <select class="form-control form-control-sm" id="itemGstValue" name="itemGstValue">
-                                                    <option value="0">-- Select One --</option>
+                                                    <option value="-1">-- Select One --</option>
+                                                    <option value="0">0</option>
                                                     <option value="5">5</option>
-                                                    <option value="12">12</option>
-                                                    <option value="18">18</option>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-2">
@@ -93,7 +92,7 @@
             $("#itemGstValue").val(getItemGstValue).change();
         }
         else {
-            $("#itemGstValue").val(0).change();
+            $("#itemGstValue").val(-1).change();
         }
 
         $("#updateItem").click(function (e) {
