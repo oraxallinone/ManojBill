@@ -114,16 +114,16 @@ namespace HotelBill.Controllers
         }
         #endregion-------------------------------------------------------
 
-        
+
 
         [HttpGet]
         public JsonResult GetAllItemList()
         {
-            var items = db.ItemMasters .Select(i => new
-                          {
-                              i.ItemId,
-                              i.ItemDetails
-                          }) .ToList();
+            var items = db.ItemMasters.Select(i => new
+            {
+                i.ItemId,
+                i.ItemDetails
+            }).ToList();
             return Json(items, JsonRequestBehavior.AllowGet);
         }
 
@@ -132,7 +132,8 @@ namespace HotelBill.Controllers
         {
             var items = db.ItemMasters
                 .Where(i => i.ItemDetails.Contains(search) || i.ItemCode.Contains(search))
-                .Select(i => new {
+                .Select(i => new
+                {
                     ItemId = i.ItemId,
                     ItemDetails = i.ItemDetails
                 })
@@ -146,11 +147,11 @@ namespace HotelBill.Controllers
         public JsonResult GetCustomerList()
         {
             var customers = (from cust in db.CustomerMasters
-                    select new CustomerInformation
-                    {
-                        CustBasicInfo = cust.custId.ToString() + "-" + cust.gstType.ToString(),
-                        CustName = cust.custName
-                    }).ToList();
+                             select new CustomerInformation
+                             {
+                                 CustBasicInfo = cust.custId.ToString() + "-" + cust.gstType.ToString(),
+                                 CustName = cust.custName
+                             }).ToList();
             return Json(customers, JsonRequestBehavior.AllowGet);
         }
 
@@ -322,13 +323,13 @@ namespace HotelBill.Controllers
             ReturnDraftResult data = new ReturnDraftResult();
 
             var invoiceData = db.InvoiceDetails.Where(x => x.IDraftNo == draftNo && x.IinvoiceStatus == "draft" && x.IsActive == true).FirstOrDefault();
-           
+
 
             data.IId = invoiceData.IId;
             data.INo = invoiceData.INo;
             data.IDraftNo = invoiceData.IDraftNo;
             data.IDate = Convert.ToString(invoiceData.IDate);
-            data.ICustId = db.CustomerMasters.Where(x => x.custId == invoiceData.ICustId).Select(y => y.custId).FirstOrDefault().ToString() + "-" + db.CustomerMasters.Where(x => x.custId == invoiceData.ICustId).Select(y => y.gstType).FirstOrDefault().ToString();;
+            data.ICustId = db.CustomerMasters.Where(x => x.custId == invoiceData.ICustId).Select(y => y.custId).FirstOrDefault().ToString() + "-" + db.CustomerMasters.Where(x => x.custId == invoiceData.ICustId).Select(y => y.gstType).FirstOrDefault().ToString(); ;
             data.IinvoiceStatus = invoiceData.IinvoiceStatus;
             data.TotalValue = invoiceData.TotalValue;
             data.TotalGST = invoiceData.TotalGST;
@@ -405,44 +406,40 @@ namespace HotelBill.Controllers
             }
             db.SaveChanges();
 
-
-
-
-
             return RedirectToAction("GstDraftList");
         }
 
-        public ActionResult Practice()
-        {
-            InvoiceGstViewModel obj = new InvoiceGstViewModel();
+        //public ActionResult Practice()
+        //{
+        //    InvoiceGstViewModel obj = new InvoiceGstViewModel();
 
-            try
-            {
-                
+        //    try
+        //    {
 
-                // Load GST % dropdown (5, 12, 18)
-                ViewBag.gstList = new SelectList(new List<SelectListItem>
-        {
-            new SelectListItem { Text = "5%", Value = "5" },
-            new SelectListItem { Text = "12%", Value = "12" },
-            new SelectListItem { Text = "18%", Value = "18" }
-        }, "Value", "Text");
 
-                // Load Customer dropdown
-                //ViewBag.customer = new SelectList(GetCustomerList(), "CustBasicInfo", "CustName");
+        //        // Load GST % dropdown (5, 12, 18)
+        //        ViewBag.gstList = new SelectList(new List<SelectListItem>
+        //{
+        //    new SelectListItem { Text = "5%", Value = "5" },
+        //    new SelectListItem { Text = "12%", Value = "12" },
+        //    new SelectListItem { Text = "18%", Value = "18" }
+        //}, "Value", "Text");
 
-                return View(obj);
-            }
-            catch (Exception)
-            {
-                return View();
-                throw;
-            }
-            finally
-            {
-                obj = null;
-            }
-        }
+        //        // Load Customer dropdown
+        //        //ViewBag.customer = new SelectList(GetCustomerList(), "CustBasicInfo", "CustName");
+
+        //        return View(obj);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return View();
+        //        throw;
+        //    }
+        //    finally
+        //    {
+        //        obj = null;
+        //    }
+        //}
 
     }
 }

@@ -52,6 +52,12 @@ namespace HotelBill.Controllers
         public ActionResult CustomerView(int id)
         {
             var cust = db.CustomerMasters.Where(x => x.custId == id).FirstOrDefault();
+            if (cust == null)
+            {
+                // Option 1: Redirect to list
+                return RedirectToAction("CustomerList");
+                // Option 2: return View("NotFound");
+            }
             return View(cust);
         }
 

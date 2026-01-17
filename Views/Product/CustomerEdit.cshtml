@@ -54,17 +54,19 @@
                                                 <option value="2">IGST</option>
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-2">
-                                            <label for="exampleInputEmail1">Is Active For Transaction</label>
-                                            @Html.CheckBoxFor(m => m.isActive, new {   @class = "form-control form-control-sm" })
-                                            @if (Model != null && Model.isActive != null && Model.isActive == true)
-                                            {
-                                                <span class="acCustomer text-green">(Active)</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="acCustomer text-red">(Inactive)</span>
-                                            }
+                                        <div class="form-group col-md-4">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                @Html.CheckBox("isActive", Model.isActive ?? false, new { @class = "form-check-input", style = "margin: 0 6px 0 0; vertical-align: middle;" })
+                                                <label for="isActive" style="margin-bottom: 0; margin-right: 6px; white-space: nowrap; vertical-align: middle;    margin-top: 36px;">Is Active For Transaction</label>
+                                                @if (Model != null && Model.isActive != null && Model.isActive == true)
+                                                {
+                                                    <span class="acCustomer text-green" style="margin-left: 4px; white-space: nowrap;    margin-top: 33px;">(Active)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="acCustomer text-red" style="margin-left: 4px; white-space: nowrap;    margin-top: 33px;">(Inactive)</span>
+                                                }
+                                            </div>
                                         </div>
 
                                     </div>
