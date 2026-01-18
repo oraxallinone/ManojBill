@@ -22,9 +22,9 @@
         taxCalculation();
     });
     $(document).on('click', '#iPlus', function (e) {
-        debugger
-        let itmName = $('#itemSearch').val();
-        if (itmName == "") { swal("", "Please select an item", "error"); return false; }
+        // Get selected text from Select2
+        let itmName = $('#itemSearch').find('option:selected').text();
+        if (!itmName || itmName === 'Search item...') { swal("", "Please select an item", "error"); return false; }
         let value = $("#itm_Quantity").val();
         if (value == "") { $("#itm_Quantity").val(1); }
         if (value != "") { $("#itm_Quantity").val(parseInt(value) + 1); }
@@ -39,9 +39,14 @@
         taxCalculation();
     });
     $("#btnAddItm").click(function () {
+        debugger
         let custId = $('select#custId option:selected').val(); if (custId == "") { swal("", "Please choose customer first", "error"); return false; }
-        let itmId = $('#itemSearch').val();
-        let itmName = $('select#ItemCode option:selected').text();
+        let itmId = $("#itm_ItemCodeT").val();
+        let itmName = '';
+        var selectedData = $('#itemSearch').select2('data');
+        if (selectedData && selectedData.length > 0) {
+            itmName = selectedData[0].text;
+        }
         let itmHsn = $("#itm_HSN").val();
         let itmQty = $("#itm_Quantity").val();
         let itmPart = $("#itm_Part").val();
@@ -57,22 +62,24 @@
         if (itmValue == "" || itmValue == 0) { alert("Value should not be empty"); return false; }
 
         slno = slno + 1;
+        let deleteImgPath = '/Content/img/delete.png'; // Use absolute path for static content
         let bodyHtml = " <tr class='fontMenuBody tableBorderitem cTableRow'>" +
-                              "<td class='textCenter cItmCode'>" + itmId + "</td>" +
-                              "<td class='cItmName'>" + itmName + " </td>" +
-                              "<td class='textCenter cItmHsn'>" + itmHsn + "</td>" +
-                              "<td class='textCenter cItmQty'>" + itmQty + "</td>" +
-                              "<td class='textCenter cItmPart' style='text-transform:uppercase'>" + itmPart + "</td>" +
-                              "<td class='textCenter cItmRate'>" + itmRate + "</td>" +
-                              "<td class='textRight cItmValue'>" + itmValue + "</td>" +
-                              "<td class='textCenter'>" +
-                                    "<input type='button' class='fa-solid fa-trash-can fontRed btmItmDelete' /> </td>" +
-                              "</tr>";
+                      "<td class='textCenter cItmCode'>" + itmId + "</td>" +
+                      "<td class='cItmName'>" + itmName + " </td>" +
+                      "<td class='textCenter cItmHsn'>" + itmHsn + "</td>" +
+                      "<td class='textCenter cItmQty'>" + itmQty + "</td>" +
+                      "<td class='textCenter cItmPart' style='text-transform:uppercase'>" + itmPart + "</td>" +
+                      "<td class='textCenter cItmRate'>" + itmRate + "</td>" +
+                      "<td class='textRight cItmValue'>" + itmValue + "</td>" +
+                      "<td class='textCenter'> <img style='height: 15px;cursor: pointer' class='btmItmDelete' src='" + deleteImgPath + "' /> </td>" +
+                      "</tr>";
 
         $("#tblInvoice tbody").append(bodyHtml);
         calulateValue();
         //gstCalculation();
         resetAdd();
+        // Clear the item search box after adding
+        $('#itemSearch').val('').trigger('change');
     });
     $(document).on("click", '.btmItmDelete', function () {
         if (!confirm("Do you want to delete")) { return false; }
@@ -120,6 +127,7 @@
 
     //##function#############################################################
     function loadDraft() {
+        debugger
         $.ajax({
             url: '/Invoice/GetDraftData',
             type: "GET",
@@ -135,20 +143,21 @@
 
                     $("#custId").val(result.ICustId);
                     $("#IDate").val(formatDate2(result.IDate));
-
+                    let deleteImgPath = '/Content/img/delete.png'; // Use absolute path for static content
                     $.each(result.ItemTransactions, function (index, value) {
                         bodyHtml = bodyHtml + " <tr class='fontMenuBody tableBorderitem cTableRow bg-bisq'>" +
                                          "<td class='textCenter cItmCode'>" + value.ItemCodeT + "</td>" +
                                          "<td class='cItmName'>" + value.ItemDetails + " </td>" +
                                          "<td class='textCenter cItmHsn'>" + value.HSN + "</td>" +
                                          "<td class='textCenter cItmQty'>" + value.Quantity + "</td>" +
+
+                                         "<td class='textCenter cItmPart' style='text-transform:uppercase'>" + value.ItemmPart + "</td>" +
+
+
                                          "<td class='textCenter cItmRate'>" + value.Rate + "</td>" +
                                          "<td class='textRight cItmValue'>" + value.Value + "</td>" +
-                                         "<td class='textCenter cItmGst'>" + value.GstRate + "</td>" +
-                                         "<td class='textRight cItmGstValue'>" + value.GstValue + "</td>" +
-                                         "<td class='textRight cItmTotal'>" + value.Total + "</td>" +
-                                         "<td class='textCenter'>" +
-                                               "<input type='button' class='fa-solid fa-trash-can fontRed btmItmDelete' /> </td>" +
+                                         //"<td class='textCenter'> <input type='button' class='fa-solid fa-trash-can fontRed btmItmDelete' /> </td>" +
+                                         "<td class='textCenter'> <img style='height: 15px;cursor: pointer' class='btmItmDelete' src='" + deleteImgPath + "' /> </td>" +
                                          "</tr>";
                     });
                     $("#tblInvoice tbody").append(bodyHtml);
@@ -295,7 +304,7 @@
         let value = qty * rate;
         //let taxAble = (gst * value) / 100;
         //let halfTax = taxAble / 2;
-        let taotal = value + taxAble;
+        //let taotal = value + taxAble;
         $("#itm_Value").val(value.toFixed(2));
         //$("#itm_GstValue").val(taxAble.toFixed(2));
         //$("#itm_Total").val(Math.round(taotal.toFixed(2)));
@@ -360,34 +369,24 @@
             url: '/Invoice/GetAllItemList',
             dataType: "json",
             success: function (data) {
-                if (allItems.length != 0) { allItems = [] };
+                allItems = data;
+                // Populate Select2 dropdown
+                var $itemSearch = $('#itemSearch');
+                $itemSearch.empty();
+                $itemSearch.append('<option value="">Search item...</option>');
                 $.each(data, function (index, item) {
-                    allItems.push(item);
+                    $itemSearch.append('<option value="' + item.ItemCode + '">' + item.ItemDetails + '</option>');
+                });
+                $itemSearch.select2({
+                    placeholder: 'Search item...',
+                    allowClear: false,
+                    width: 'resolve'
                 });
             }
         });
     }
 
-    $("#itemSearchss").change(function () {
-        let selectedItemId = $('#itemSearch').val();
-        let itemID = parseInt(selectedItemId);
-        $.ajax({
-            type: "POST",
-            url: '/Invoice/GetItmById',
-            data: { id: itemID },
-            dataType: "json",
-            success: function (data) {
-                $("#itm_ItemCodeT").val(data.ItemCode);
-                $("#itm_ItemDetails").val(data.ItemDetails);
-                $("#itm_HSN").val(data.HSN);
-                $("#itm_Part").val(data.ItemPart);
-                $("#itm_Rate").val(data.Rate);
-                $('#itemSearch').attr('alt', data.ItemCode);
-                //$("#itm_GstRate").val(data.Gst);
-            }
-        });
-    });
-
+    //not used
     function getDetailsByItemName() {
         let itemName = $('#itemSearch').val();
         $.ajax({
@@ -396,6 +395,7 @@
             data: { itemname: itemName },
             dataType: "json",
             success: function (data) {
+                debugger
                 $("#itm_ItemCodeT").val(data.ItemCode);
                 $("#itm_ItemDetails").val(data.ItemDetails);
                 $("#itm_HSN").val(data.HSN);
@@ -404,31 +404,59 @@
             }
         });
     }
-    $("#itemSearch").keyup(function () {
-        const query = $(this).val().toLowerCase();
-        //const results = allItems.filter(item => item.itemDesc.includes(query));
-        var results = allItems.filter(item => (item.ItemDetails || "").toLowerCase().includes(query)).slice(0, 10);
 
-        $("#autocomplete-list").empty(); // clear previous results
+    // Use Select2 events for reliable value handling
+    $('#itemSearch').on('select2:select', function (e) {
+       // debugger
+        var itemname = e.params.data.text;
+        //if (!selectedItemId) {
+        //    $("#itm_ItemCodeT").val("");
+        //    $("#itm_ItemDetails").val("");
+        //    $("#itm_HSN").val("");
+        //    $("#itm_Part").val("");
+        //    $("#itm_Rate").val("");
+        //    return;
+        //}
 
-        if (query.length === 0 || results.length === 0) return;
+        $.ajax({
+            type: "POST",
+            url: '/Invoice/GetItmByName',
+            data: { itemname: itemname },
+            dataType: "json",
+            success: function (data) {
+                debugger
+                $("#itm_ItemCodeT").val(data.ItemCode);
+                $("#itm_ItemDetails").val(data.ItemDetails);
+                $("#itm_HSN").val(data.HSN);
+                $("#itm_Part").val(data.ItemPart);
+                $("#itm_Rate").val(data.Rate);
+                $('#itemSearch').attr('alt', data.ItemCode);
+                $("#itm_Quantity").val(1);
 
-        results.forEach(item => {
-            const div = $("<div>")
-              .addClass("autocomplete-item")
-              .text(item.ItemDetails)
-              .on("click", function () {
-                  $("#itemSearch").val(item.ItemDetails);
-                  $("#autocomplete-list").empty();
-              });
-
-            $("#autocomplete-list").append(div);
+                taxCalculation();
+            }
         });
-    })
-    $(document).on("click", function (e) {
-        if (!$(e.target).closest("#itemSearch").length) {
-            $("#autocomplete-list").empty();
-            getDetailsByItemName();
-        }
     });
+    $('#itemSearch').on('select2:clear', function (e) {
+        $("#itm_ItemCodeT").val("");
+        $("#itm_ItemDetails").val("");
+        $("#itm_HSN").val("");
+        $("#itm_Part").val("");
+        $("#itm_Rate").val("");
+    });
+
+    // Autocomplete logic removed; handled by Select2 now
+    //$(document).on("click", function (e) {
+    //    if (!$(e.target).closest("#itemSearch").length) {
+    //        $("#autocomplete-list").empty();
+    //        getDetailsByItemName();
+    //    }
+    //});
+
+
+    // Clear autocomplete-list once on document load
+    $("#autocomplete-list").empty();
+
+    // Call getDetailsByItemName once on page load
+    getDetailsByItemName();
 });

@@ -180,6 +180,7 @@
   <ItemGroup>
     <Content Include="Content\application-css\common-date-format.css" />
     <Content Include="Content\application-css\loader.css" />
+    <Content Include="Content\img\delete.png" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <EntityDeploy Include="Models\Model1.edmx">

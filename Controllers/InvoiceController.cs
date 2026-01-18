@@ -259,6 +259,7 @@ namespace HotelBill.Controllers
             return Json(item);
         }
 
+
         [HttpPost]
         public JsonResult GetItemByCode(string itemCode)
         {
@@ -348,6 +349,7 @@ namespace HotelBill.Controllers
                                          DraftNoT = d.DraftNoT,
                                          ItemCodeT = d.ItemCodeT,
                                          ItemDetails = d.ItemDetails,
+                                         ItemmPart = d.ItemmPart,
                                          HSN = d.HSN,
                                          Quantity = d.Quantity,
                                          Rate = d.Rate,
@@ -359,9 +361,6 @@ namespace HotelBill.Controllers
                                          UpdatedDate = d.UpdatedDate,
                                          IsActive = d.IsActive,
                                      }).ToList();
-
-
-
 
             //var draftItems = db.ItemTransactions.Where(x => x.DraftNoT == draftNo && x.IsActive == true).ToList();
             return Json(data, JsonRequestBehavior.AllowGet);

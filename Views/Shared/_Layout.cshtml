@@ -5,17 +5,25 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link rel="icon" type="image/x-icon" href="~/theme/img/favicon.ico">
-   
     <link href="~/theme/adminlte.css" rel="stylesheet" />
     <link href="~/theme/customeCss.css" rel="stylesheet" />
-
-   <link href="~/theme/fontawesome.css" rel="stylesheet" />
-    <script src="~/theme/fontawesome.js"></script>
-
-    <script src="~/Scripts/jquery-3.6.0.js"></script>
+    <link href="~/theme/fontawesome.css" rel="stylesheet" />
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="~/Content/application-css/loader.css" rel="stylesheet" />
+    
+    <script src="~/Scripts/jquery-3.6.0.js"></script>
+    <script src="~/theme/bootstrap.bundle.min.js"></script>
+    <script src="~/theme/bs-custom-file-input.min.js"></script>
+    <script src="~/theme/adminlte.min.js"></script>
+    @*<script src="~/theme/demo.js"></script>*@
+    <script src="~/theme/sweetalert.min.js"></script>
+    @*<script>  $(function () { bsCustomFileInput.init(); }); </script>*@
+
+
     <script type="text/javascript">
         $(document).ready(function () {
+
             $(document).ajaxStart(function () {
                 $("#pageLoader").fadeIn(200);
             });
@@ -23,8 +31,14 @@
             $(document).ajaxStop(function () {
                 $("#pageLoader").fadeOut(200);
             });
+
         });
     </script>
+    <style>
+        .content-wrapper {
+            min-height: 672.2px !important;
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini" style="font-family:'Times New Roman';font-size:13px">
     <div class="wrapper">
@@ -67,20 +81,13 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item"> <a href="/PRODUCT/Index" class="nav-link"> <i class="nav-icon fas fa-tachometer-alt"></i> <p>Dashboard</p> </a> </li>
-
                         <li class="nav-item"> <a href="/Product/CustomerAdd" class="nav-link"> <i class="nav-icon fa-solid fa-circle-user"></i> <p>Add Customer</p> </a> </li>
                         <li class="nav-item"> <a href="/Product/CustomerList" class="nav-link"> <i class="nav-icon fa-solid fa-user-group"></i> <p>Customer List</p> </a> </li>
-
                         <li class="nav-item"> <a href="/PRODUCT/ItemAdd" class="nav-link"> <i class="nav-icon fa-solid fa-warehouse"></i> <p>Add Item</p> </a> </li>
                         <li class="nav-item"> <a href="/PRODUCT/ItemList" class="nav-link"> <i class="nav-icon fa-solid fa-list"></i> <p>Item List</p> </a> </li>
-
                         <li class="nav-item"> <a href="/Invoice/GstInvoiceCreate" class="nav-link"> <i class="nav-icon fa-solid fa-window-maximize"></i> <p> Crete GstInvoice </p> </a> </li>
-                       
                         <li class="nav-item"> <a href="/Invoice/GstDraftList" class="nav-link"> <i class="nav-icon fa-solid fa-file-lines"></i> <p> GST Draft List </p> </a> </li>
-
-                        
-                         <li class="nav-item"> <a href="/Invoice/GstInvoiceList" class="nav-link"> <i class="nav-icon fa-solid fa-file-lines"></i> <p> GST invoice List </p> </a> </li>
-
+                        <li class="nav-item"> <a href="/Invoice/GstInvoiceList" class="nav-link"> <i class="nav-icon fa-solid fa-file-lines"></i> <p> GST invoice List </p> </a> </li>
                     </ul>
                 </nav>
             </div>
@@ -90,16 +97,6 @@
         </div>
         @RenderBody()
     </div>
-    <script src="~/Scripts/jquery-3.6.0.js"></script>
-    <script src="~/theme/bootstrap.bundle.min.js"></script>
-    <script src="~/theme/bs-custom-file-input.min.js"></script>
-    <script src="~/theme/adminlte.min.js"></script>
-    <script src="~/theme/demo.js"></script>
-    <link href="~/theme/fontawesome.css" rel="stylesheet" />
-    <script src="~/theme/fontawesome.js"></script>
-    @*<script src="~/theme/all.js"></script>*@
    
-    <script src="~/theme/sweetalert.min.js"></script>
-    <script>  $(function () { bsCustomFileInput.init(); }); </script>
 </body>
 </html>

@@ -89,6 +89,7 @@ namespace HotelBill.Models
         public string ItemCodeT { get; set; }
         public string ItemDetails { get; set; }
         public string HSN { get; set; }
+        public string ItemmPart { get; set; }
         public Nullable<int> Quantity { get; set; }
         public decimal Rate { get; set; }
         public decimal Value { get; set; }
